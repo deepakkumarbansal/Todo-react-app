@@ -1,20 +1,20 @@
 import React from "react";
 import Todo from "../Todo/Todo";
-import { useContext } from "react";
-import TodoContext from "../../context/TodoContext";
-import TodoDispatchContext from "../../context/TodoDispatchContext";
+import { useSelector } from "react-redux";
 
-const TodoList = () => {
+const TodoList = ({edittodo, deletetodo, finishedtodo}) => {
   
-  const { list} = useContext(TodoContext);
-  const {dispatch} = useContext(TodoDispatchContext);
-  
+  //const dispatch = useDispatch(); //A hook to access the redux dispatch function.
+  const list = useSelector((state)=>state.todo) //A hook to access the redux store's state. This hook takes a selector function as an argument. The selector is called with the store state.
+
   function onFinished(todo, isfinished){
-    dispatch({type: 'finished_todo', payload: {todo: todo, isfinished}})
+    //dispatch(todoFinished(todo, isfinished))
+    finishedtodo(todo, isfinished)
   }
 
   function onDelete(todo){
-    dispatch({type: 'delete_todo', payload: {todo}})
+    // dispatch(todoDelete(todo))
+    deletetodo(todo)
   }
 
 
@@ -25,8 +25,9 @@ const TodoList = () => {
           <Todo key={todo.id} todoData={todo.toDoData} isFinished={todo.finished}
             changeFinished={(isfinished)=>onFinished(todo, isfinished)}
             onDelete={()=>onDelete(todo)}
-            onEdit={(todoText)=>dispatch({type: 'edit_todo', payload: {todoText: todoText, todo: todo}})}
-          />
+            // onEdit={(todoText)=>dispatch(todoEdit(todo,todoText))}
+            onEdit={(todoText)=>edittodo(todo, todoText)}
+            />
         ))}
     </ul>
   );
